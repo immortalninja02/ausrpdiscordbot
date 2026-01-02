@@ -7,6 +7,24 @@ from datetime import datetime
 import json
 import os
 
+from flask import Flask
+import threading
+
+app = Flask('')
+
+@app.route('/')
+def home():
+    return "Bot is running!"
+
+def run():
+    app.run(host='0.0.0.0', port=10000)
+
+def keep_alive():
+    t = threading.Thread(target=run)
+    t.start()
+
+keep_alive()  # call at top of bot.py
+
 TOKEN = os.getenv("DISCORD_TOKEN")
 
 # IDs from your Inventor.gg data
@@ -193,4 +211,5 @@ async def endsession(ctx: discord.ApplicationContext):
 # Run bot
 # =========================
 bot.run(TOKEN)
+
 
