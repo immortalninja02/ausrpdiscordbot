@@ -23,18 +23,21 @@ bot = commands.Bot(intents=intents)
 DATA_FILE = "data.json"
 
 def load_data():
-    if not os.path.exists(DATA_FILE):
+    # If the file doesn't exist, create it with default data
+    if not os.path.exists(DATA_FILE) or os.stat(DATA_FILE).st_size == 0:
+        with open(DATA_FILE, "w") as f:
+            json.dump({"session_msg_id": None}, f)
         return {"session_msg_id": None}
 
+    # Load the existing file
     with open(DATA_FILE, "r") as f:
         return json.load(f)
-
 
 def save_data(data):
     with open(DATA_FILE, "w") as f:
         json.dump(data, f, indent=2)
 
-# Global session variable (Inventor.gg equivalent)
+# Global session variable
 data = load_data()
 session_msg_id = data.get("session_msg_id")
 
@@ -128,7 +131,7 @@ async def schedulesession(
         privacy_level=discord.ScheduledEventPrivacyLevel.guild_only
     )
 
-    await ctx.send(f"✅ Scheduled event created: {event.name}", ephemeral=True)
+    await ctx.send(f"Scheduled event created: {event.name}", ephemeral=True)
 
 # =========================
 # /endsession
@@ -190,3 +193,4 @@ async def endsession(ctx: discord.ApplicationContext):
 # Run bot
 # =========================
 bot.run(TOKEN)
+
